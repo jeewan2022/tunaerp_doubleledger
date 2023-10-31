@@ -55,7 +55,7 @@ def create_invoice_adj_jv(self,cdt):
             jv.save()
             jv.submit()
 
-    elif self.doctype == 'Purchase Invoice' and self.is_paid == 0 and self.no_double_ledger==0: 
+    elif self.doctype == 'Purchase Invoice' and self.is_paid == 0 and self.no_double_ledger==0 and self.outstanding_amount != 0.0: 
         doc = frappe.get_doc(self,cdt)
         supplier_list = frappe.get_list('Double Ledger Parties', filters= {'primary_role':'Customer','supplier':self.supplier}, fields = "*" )
         customer_dp = None
@@ -77,7 +77,6 @@ def create_invoice_adj_jv(self,cdt):
             jv.posting_date = doc.posting_date
             jv.company = doc.company
             jv.remark = 'Adjustment for Purchase Invoice# {0}'.format(doc.name)
-
         #Entry for Customer
             jv.append('accounts', {
                 'account': customer_account_type,
